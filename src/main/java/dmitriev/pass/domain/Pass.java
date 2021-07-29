@@ -1,5 +1,7 @@
 package dmitriev.pass.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import dmitriev.pass.View;
 import lombok.ToString;
 
 import javax.persistence.Entity;
@@ -12,12 +14,25 @@ import java.util.UUID;
 @ToString(of = {"guid", "personName", "personSurname", "personPatronymic", "passportNumber", "dateFrom", "dateTo"})
 public class Pass {
     @Id
-    private String guid = String.valueOf(UUID.randomUUID());;
+    @JsonView(View.Public.class)
+    private String guid = String.valueOf(UUID.randomUUID());
+
+    @JsonView(View.Internal.class)
     private String personName;
+
+    @JsonView(View.Internal.class)
     private String personSurname;
+
+    @JsonView(View.Internal.class)
     private String personPatronymic;
+
+    @JsonView(View.Internal.class)
     private String passportNumber;
+
+    @JsonView(View.Internal.class)
     private String dateFrom;
+
+    @JsonView(View.Internal.class)
     private String dateTo;
 
     public String getGuid() {

@@ -1,5 +1,7 @@
 package dmitriev.pass.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import dmitriev.pass.View;
 import dmitriev.pass.domain.Pass;
 import dmitriev.pass.repo.PassRepo;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +31,7 @@ public class PassController {
     }
 
     @PostMapping
+    @JsonView(View.Public.class)
     public Pass create(@RequestBody Pass pass) {
         return passRepo.save(pass);
     }
