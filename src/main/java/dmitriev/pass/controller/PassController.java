@@ -25,8 +25,8 @@ public class PassController {
         return passRepo.findAll();
     }
 
-    @GetMapping("{id}")
-    public Pass getOne(@PathVariable("id") Pass pass) {
+    @GetMapping("{guid}")
+    public Pass getOne(@PathVariable("guid") Pass pass) {
         return pass;
     }
 
@@ -36,18 +36,22 @@ public class PassController {
         return passRepo.save(pass);
     }
 
-    @PutMapping("{id}")
-    public Pass update(
-            @PathVariable("id") Pass passFromDb,
+    @PutMapping("{guid}")
+    public void update(
+            @PathVariable("guid") Pass passFromDb,
             @RequestBody Pass pass
     ) {
-        BeanUtils.copyProperties(pass, passFromDb,  "id");
-
-        return passRepo.save(passFromDb);
+        BeanUtils.copyProperties(pass, passFromDb,  "guid");
+        passRepo.save(passFromDb);
     }
 
-    @DeleteMapping("{id}")
-    public void update(@PathVariable("id") Pass pass) {
+    @DeleteMapping("{guid}")
+    public void update(@PathVariable("guid") Pass pass) {
         passRepo.delete(pass);
     }
+
+//    @GetMapping("validate/{guid}")
+//    public Pass validate(@PathVariable("guid") Pass pass) {
+//        return pass;
+//    }
 }
