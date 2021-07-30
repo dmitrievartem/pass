@@ -6,8 +6,14 @@ import dmitriev.pass.domain.Pass;
 import dmitriev.pass.repo.PassRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -26,7 +32,8 @@ public class PassController {
     }
 
     @GetMapping("{guid}")
-    public Pass getOne(@PathVariable("guid") Pass pass) {
+    public Pass getOne(@PathVariable(name = "guid", required = false) Pass pass) {
+        checkGuid(pass);
         return pass;
     }
 
@@ -38,20 +45,36 @@ public class PassController {
 
     @PutMapping("{guid}")
     public void update(
-            @PathVariable("guid") Pass passFromDb,
+            @PathVariable(name = "guid", required = false) Pass passFromDb,
             @RequestBody Pass pass
     ) {
+        checkGuid(passFromDb);
         BeanUtils.copyProperties(pass, passFromDb,  "guid");
         passRepo.save(passFromDb);
     }
 
     @DeleteMapping("{guid}")
-    public void update(@PathVariable("guid") Pass pass) {
+    public void update(@PathVariable(name = "guid", required = false) Pass pass) {
+        checkGuid(pass);
         passRepo.delete(pass);
     }
 
-//    @GetMapping("validate/{guid}")
-//    public Pass validate(@PathVariable("guid") Pass pass) {
-//        return pass;
-//    }
+    @GetMapping("validate/{guid}")
+    public void validate(@PathVariable(name = "guid", required = false) Pass pass) throws ParseException {
+        checkGuid(pass);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate dateFrom = LocalDate.parse(pass.getDateFrom(), formatter);
+        LocalDate dateTo = LocalDate.parse(pass.getDateTo(), formatter);
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Moscow"));
+        if (today.isBefore(dateFrom) || today.isAfter(dateTo)) {
+            throw new ResponseStatusException(HttpStatus.GONE, "Pass is not valid");
+        }
+    }
+
+    public void checkGuid(Pass pass) {
+        if (pass == null) {
+//            throw new NotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "GUID not found");
+        }
+    }
 }
