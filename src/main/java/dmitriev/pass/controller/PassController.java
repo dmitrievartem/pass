@@ -63,10 +63,8 @@ public class PassController {
     public void validate(@PathVariable(name = "guid", required = false) Pass pass) throws ParseException {
         checkGuid(pass);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate dateFrom = LocalDate.parse(pass.getDateFrom(), formatter);
-        LocalDate dateTo = LocalDate.parse(pass.getDateTo(), formatter);
         LocalDate today = LocalDate.now(ZoneId.of("Europe/Moscow"));
-        if (today.isBefore(dateFrom) || today.isAfter(dateTo)) {
+        if (today.isBefore(pass.getDateFrom()) || today.isAfter(pass.getDateTo())) {
             throw new ResponseStatusException(HttpStatus.GONE, "Pass is not valid");
         }
     }

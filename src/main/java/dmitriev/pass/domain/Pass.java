@@ -7,6 +7,7 @@ import lombok.ToString;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -30,10 +31,10 @@ public class Pass {
     private String passportNumber;
 
     @JsonView(View.Internal.class)
-    private String dateFrom;
+    private LocalDate dateFrom;
 
     @JsonView(View.Internal.class)
-    private String dateTo;
+    private LocalDate dateTo;
 
     public String getGuid() {
         return guid;
@@ -75,19 +76,19 @@ public class Pass {
         this.passportNumber = passportNumber;
     }
 
-    public String getDateFrom() {
+    public LocalDate getDateFrom() {
         return dateFrom;
     }
 
-    public void setDateFrom(String dateFrom) {
+    public void setDateFrom(LocalDate dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public String getDateTo() {
+    public LocalDate getDateTo() {
         return dateTo;
     }
 
-    public void setDateTo(String dateTo) {
+    public void setDateTo(LocalDate dateTo) {
         this.dateTo = dateTo;
     }
 }
