@@ -10,10 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -60,9 +58,8 @@ public class PassController {
     }
 
     @GetMapping("validate/{guid}")
-    public void validate(@PathVariable(name = "guid", required = false) Pass pass) throws ParseException {
+    public void validate(@PathVariable(name = "guid", required = false) Pass pass) {
         checkGuid(pass);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate today = LocalDate.now(ZoneId.of("Europe/Moscow"));
         if (today.isBefore(pass.getDateFrom()) || today.isAfter(pass.getDateTo())) {
             throw new ResponseStatusException(HttpStatus.GONE, "Pass is not valid");
@@ -71,7 +68,6 @@ public class PassController {
 
     public void checkGuid(Pass pass) {
         if (pass == null) {
-//            throw new NotFoundException();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "GUID not found");
         }
     }
